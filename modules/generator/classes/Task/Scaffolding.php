@@ -8,16 +8,17 @@
 	 */
 	class Task_Scaffolding extends Minion_Task
 	{
-
 		protected $_options = array(
 			'name' => FALSE,
 			'fields' => FALSE,
 		);
 
-		public static $fields_regexp = '/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i';
+		public $fields = array();
+		private $fields_regexp = '/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i';
+
 
 		/**
-		 * Generates a help list for all tasks
+		 * Execute scafolding
 		 *
 		 * @param name    | string
 		 * @param fields  | string
@@ -32,6 +33,20 @@
 				die("fields is required \n");
 
 			$this->fields = $this->parse_fields($params['fields']);
+
+			$controller = Inflector::plural(Text::ucfirst($params['name']));
+			$model = $params['name'];
+
+			$controller = View::factory('controller', array(
+				'controller' => $controller,
+				'actions' => array(
+					array(
+						'name' => 'index',
+						'code' => 'test',
+					)
+				)
+			))->render();
+
 		}
 
 		private function parse_fields($fields_str)
@@ -42,7 +57,7 @@
 
 			foreach ($fields_parts as $part)
 			{
-				preg_match(static::$fields_regexp, $part, $matches);
+				preg_match($this->fields_regexp, $part, $matches);
 
 				if ( ! isset($matches[1]))
 				{
