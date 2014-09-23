@@ -1,0 +1,6 @@
+.DS_Store
+
+/vendor/
+/build/
+/modules/
+/tests/test_data/temp/
